@@ -18,8 +18,14 @@ export default function Stream() {
 
         const index = _.findIndex((_) => _.id === newValue[1])
 
-        if (index !== -1) _[index].data = newValue.slice(2, newValue.length)
-        else _.push({ id: newValue[1], data: newValue.slice(2, newValue.length) })
+        if (index !== -1) {
+          _[index].data = newValue.slice(2, newValue.length)
+
+          _.sort((a, b) => a.id - b.id)
+        }
+        else {
+          _.push({ id: newValue[1], data: newValue.slice(2, newValue.length) })
+        }
 
         return _
       })
@@ -64,8 +70,8 @@ export default function Stream() {
     </HeaderRow>
     <BodyContainer>
       {
-        data.map((_dataFrame) =>
-          <BodyRow>
+        data.map((_dataFrame, index) =>
+          <BodyRow key={index}>
             <Cell>
               <p>0x{_dataFrame.id.toString(16).padStart(2, '0').toUpperCase()}</p>
             </Cell>
