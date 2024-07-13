@@ -1,0 +1,55 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+  color: white
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  background-color: #000a;
+  height: 50px;
+}
+
+.bodyContainer {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.bodyRow {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  width: 100%;
+}
+
+.bodyRow:nth-child(odd) {
+  background-color: #0008;
+}
+
+.bodyRow:nth-child(even) {
+  background-color: #0007;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 8px;
+}
+
+.cell p {
+  line-height: 20px;
+  margin: 0;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.headerRow .cell:nth-child(odd),
+.bodyRow .cell:nth-child(odd) {
+  background-color: #0001;
+}

@@ -21,16 +21,33 @@ nav {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  gap: 10px;
   padding: 6px 10px;
   box-sizing: border-box;
+}
+
+nav button {
+  background-color: white;
+  border: 0;
+  border-radius: 4px;
+  height: 100%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+nav select {
+  height: 100%;
+  width: 150px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 4px;
+  border: 0;
+  border-radius: 4px;
 }
 
 .mainView {
   flex-grow: 1;
   width: 100%;
-}
-
-select {
-  height: 100%;
-  width: 150px;
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
 }
