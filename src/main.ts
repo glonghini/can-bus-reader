@@ -1,6 +1,11 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron'
+import fs from 'fs'
 import path from 'path'
-import './ipcMain'
+import { ReadlineParser, SerialPort } from 'serialport'
+
+var mainWindow: BrowserWindow | null = null
+var port: SerialPort | null = null
+const writer = fs.createWriteStream(path.join(process.cwd(), 'file.txt'), 'utf-8')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -9,7 +14,7 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -52,3 +57,73 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.handle('listPorts', async () => {
+  try {
+    const ports = await SerialPort.list()
+
+    return ports
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+ipcMain.handle('openConnection', (event, path: string) => {
+  try {
+    port = new SerialPort({
+      path,
+      baudRate: 115200,
+      autoOpen: false
+    })
+
+    port.open((err) => {
+      if (err) return console.log('Error when opening port', err)
+    })
+    const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
+
+    _port.on('data', (data) => {
+      mainWindow.webContents.send('readStream', data)
+
+      writer.write(data.toString().replace(' ', ',') + '\n')
+    })
+
+    return true
+  } catch (err) {
+    console.log(err)
+
+    return false
+  }
+})
+
+ipcMain.on('readStream', () => {
+
+})
+
+ipcMain.handle('closeConnection', () => {
+  try {
+    if (port && port.open) port.close()
+
+    writer.end()
+
+    return true
+  } catch (err) {
+    console.log(err)
+
+    return false
+  }
+})
+
+// ipcMain.handle('saveStream', () => {
+//   // Create a pipestream to a file to save the readStream
+//   try {
+//     if (port && port.open) {
+//       // const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
+
+//       port.on('data', (data: Buffer) => {
+//       })
+//     }
+//   } catch (err) {
+//     console.log(err)
+//   }
+// })
+
