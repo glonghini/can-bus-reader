@@ -81,13 +81,6 @@ ipcMain.handle('openConnection', (event, path: string) => {
     port.open((err) => {
       if (err) return console.log('Error when opening port', err)
     })
-    const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
-
-    _port.on('data', (data) => {
-      mainWindow.webContents.send('readStream', data)
-
-      writer.write(data.toString().replace(' ', ',') + '\n')
-    })
 
     return true
   } catch (err) {
@@ -97,8 +90,18 @@ ipcMain.handle('openConnection', (event, path: string) => {
   }
 })
 
-ipcMain.on('readStream', () => {
+ipcMain.on('startStream', () => {
+  try {
+    const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
 
+    _port.on('data', (data) => {
+      mainWindow.webContents.send('readStream', data)
+
+      writer.write(data.toString().replace(' ', ',') + '\n')
+    })
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 ipcMain.handle('closeConnection', () => {

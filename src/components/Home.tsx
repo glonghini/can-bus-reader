@@ -1,10 +1,10 @@
 import Layout from "./Layout"
 import Stream from "./Stream"
+import Tabs from "./Tabs"
 
 export default function Home() {
-  return <main>
-    <Layout>
-      <Stream />
-    </Layout>
-  </main>
+  return <Layout>
+    {/* <Tabs /> */}
+    <Stream />
+  </Layout>
 }

@@ -38,52 +38,57 @@ export default function Stream() {
     }
   }, [])
 
-  return <Table>
-    <HeaderRow>
-      <Cell>
-        ID
-      </Cell>
-      <Cell>
-        1
-      </Cell>
-      <Cell>
-        2
-      </Cell>
-      <Cell>
-        3
-      </Cell>
-      <Cell>
-        4
-      </Cell>
-      <Cell>
-        5
-      </Cell>
-      <Cell>
-        6
-      </Cell>
-      <Cell>
-        7
-      </Cell>
-      <Cell>
-        8
-      </Cell>
-    </HeaderRow>
-    <BodyContainer>
-      {
-        data.map((_dataFrame, index) =>
-          <BodyRow key={index}>
-            <Cell>
-              <p>0x{_dataFrame.id.toString(16).padStart(2, '0').toUpperCase()}</p>
-            </Cell>
-            {
-              _dataFrame.data.map((_, _index) => <Cell key={_index}>
-                <p>0x{_.toString(16).toUpperCase()}</p>
-                <p>{_.toString(2).padStart(8, '0')}</p>
+  return <>
+    <Table>
+      <HeaderRow>
+        <Cell>
+          ID
+        </Cell>
+        <Cell>
+          1
+        </Cell>
+        <Cell>
+          2
+        </Cell>
+        <Cell>
+          3
+        </Cell>
+        <Cell>
+          4
+        </Cell>
+        <Cell>
+          5
+        </Cell>
+        <Cell>
+          6
+        </Cell>
+        <Cell>
+          7
+        </Cell>
+        <Cell>
+          8
+        </Cell>
+      </HeaderRow>
+      <BodyContainer>
+        {
+          data.map((_dataFrame, index) =>
+            <BodyRow key={index}>
+              <Cell>
+                <p>0x{_dataFrame.id.toString(16).padStart(2, '0').toUpperCase()}</p>
               </Cell>
-              )
-            }
-          </BodyRow>)
-      }
-    </BodyContainer>
-  </Table>
+              {
+                _dataFrame.data.map((_, _index) => <Cell key={_index}>
+                  <p>0x{_.toString(16).toUpperCase()}</p>
+                  <p>{_.toString(2).padStart(8, '0')}</p>
+                </Cell>
+                )
+              }
+            </BodyRow>)
+        }
+      </BodyContainer>
+    </Table>
+    <div>
+      aaa
+    </div>
+  </>
 }
