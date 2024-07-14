@@ -5,6 +5,7 @@ import { ReadlineParser, SerialPort } from 'serialport'
 
 var mainWindow: BrowserWindow | null = null
 var port: SerialPort | null = null
+var _port: ReadlineParser | null = null
 const writer = fs.createWriteStream(path.join(process.cwd(), 'file.txt'), 'utf-8')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
