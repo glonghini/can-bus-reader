@@ -91,7 +91,7 @@ ipcMain.handle('openConnection', (event, path: string) => {
   }
 })
 
-ipcMain.on('startStream', () => {
+ipcMain.handle('startStream', () => {
   try {
     const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
 

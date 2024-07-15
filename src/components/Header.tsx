@@ -23,7 +23,10 @@ export default function Header() {
   }, [listPorts])
 
   const openConnection = useCallback(async () => {
-    setConnected(await window.api.openConnection(selectedPort))
+    if (await window.api.openConnection(selectedPort)) {
+      setConnected(true)
+      window.api.startStream()
+    }
   }, [selectedPort])
 
   const closeConnection = async () => {
