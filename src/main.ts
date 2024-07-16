@@ -105,6 +105,14 @@ ipcMain.handle('startStream', () => {
   }
 })
 
+ipcMain.handle('writeStream', (event, data: string) => {
+  try {
+    port.write(data + '\n')
+  } catch (err) {
+    console.log(err)
+  }
+})
+
 ipcMain.handle('closeConnection', () => {
   try {
     if (port && port.open) port.close()

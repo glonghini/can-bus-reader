@@ -8,6 +8,7 @@ type DataFrame = {
 
 export default function Stream() {
   const [data, setData] = useState<DataFrame[]>([])
+  const [message, setMessage] = useState<string>('')
 
   useEffect(() => {
     window.api.readStream((data) => {
@@ -30,13 +31,17 @@ export default function Stream() {
         return _
       })
 
-      // console.log(data, newValue)
+      console.log(data, newValue)
     })
 
     return () => {
       window.api.closeConnection()
     }
   }, [])
+
+  const sendMessage = () => {
+    window.api.writeStream(message)
+  }
 
   return <>
     <Table>
@@ -88,7 +93,9 @@ export default function Stream() {
       </BodyContainer>
     </Table>
     <div>
-      aaa
+      <input value={message} onChange={(e) => setMessage(e.target.value)} />
+
+      <button onClick={sendMessage}>Send</button>
     </div>
   </>
 }

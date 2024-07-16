@@ -5,5 +5,6 @@ export default {
   openConnection: (path: string) => ipcRenderer.invoke('openConnection', path),
   closeConnection: () => ipcRenderer.invoke('closeConnection'),
   startStream: () => ipcRenderer.invoke('startStream'),
+  writeStream: (data: string) => ipcRenderer.invoke('writeStream', data),
   readStream: (onData: (value: string) => void) => ipcRenderer.on('readStream', (_event, value: string) => onData(value))
 }
