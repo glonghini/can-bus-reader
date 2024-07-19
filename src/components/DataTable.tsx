@@ -2,6 +2,7 @@ import styles from './DataTable.module.css'
 
 type Props = {
   children: React.ReactNode
+  flexGrow?: number
   width?: number
 }
 
@@ -38,10 +39,10 @@ export function BodyContainer({ children }: Props) {
   </div>
 }
 
-export function Cell({ children, width = 1 }: Props) {
+export function Cell({ children, width = 1, flexGrow }: Props) {
   return <div
     className={styles.cell}
-    style={{ width: width * 100 }}
+    style={{ width: width * 100, flexGrow }}
   >
     {children}
   </div>
