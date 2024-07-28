@@ -20,6 +20,10 @@
   overflow-y: auto;
 }
 
+.bodyContainer::-webkit-scrollbar {
+  width: 12px;
+}
+
 .bodyRow {
   display: flex;
   flex-direction: row;

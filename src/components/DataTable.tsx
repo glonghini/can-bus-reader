@@ -33,7 +33,7 @@ export function BodyRow({ children }: Props) {
 
 export function BodyContainer({ children }: Props) {
   return <div
-    className={styles.BodyContainer}
+    className={styles.bodyContainer}
   >
     {children}
   </div>

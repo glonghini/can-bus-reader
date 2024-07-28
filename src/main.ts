@@ -98,7 +98,7 @@ ipcMain.handle('startStream', () => {
     _port.on('data', (data) => {
       mainWindow.webContents.send('readStream', data)
 
-      writer.write(data.toString().replace(/ /g, ',') + '\n')
+      writer.write(data.toString().replace(/ /g, ',') + '\r\n')
     })
   } catch (err) {
     console.log(err)
@@ -107,7 +107,9 @@ ipcMain.handle('startStream', () => {
 
 ipcMain.handle('writeStream', (event, data: string) => {
   try {
-    port.write(data + '\n')
+    port.write(Buffer.from(data))
+
+    console.log(port.path, data)
   } catch (err) {
     console.log(err)
   }

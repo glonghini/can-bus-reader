@@ -21,6 +21,7 @@ export const theme = createTheme({
     },
     MuiTextField: {
       defaultProps: {
+        fullWidth: true,
         size: 'small',
         color: 'primary',
         variant: 'filled',
