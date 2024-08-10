@@ -75,7 +75,7 @@ ipcMain.handle('openConnection', (event, path: string) => {
   try {
     port = new SerialPort({
       path,
-      baudRate: 115200,
+      baudRate: 921600,
       autoOpen: false
     })
 
@@ -96,9 +96,11 @@ ipcMain.handle('startStream', () => {
     const _port = port.pipe(new ReadlineParser({ encoding: 'utf-8' }))
 
     _port.on('data', (data) => {
+      // console.log(data)
+
       mainWindow.webContents.send('readStream', data)
 
-      writer.write(data.toString().replace(/ /g, ',') + '\r\n')
+      writer.write(data)
     })
   } catch (err) {
     console.log(err)
