@@ -19,28 +19,28 @@ export default function Filter({ ids, filteredIds, setFilteredIds }: Props) {
     </HeaderRow>
     {/* Selected Ids */}
     {
-      filteredIds.map((_id, index) => <BodyRow key={index}>
-        <Cell width={.75}>
-          <Checkbox
-            checked={true}
-            onChange={() => setFilteredIds((_ids) => _ids.filter((_) => _ !== _id))}
-          />
-        </Cell>
-        <Cell flexGrow={1}>
-          {_id}
-        </Cell>
-      </BodyRow>)
+      // filteredIds.map((_id, index) => <BodyRow key={index}>
+      //   <Cell width={.75}>
+      //     <Checkbox
+      //       checked={true}
+      //       onChange={() => setFilteredIds((_ids) => _ids.filter((_) => _ !== _id))}
+      //     />
+      //   </Cell>
+      //   <Cell flexGrow={1}>
+      //     {_id}
+      //   </Cell>
+      // </BodyRow>)
     }
     {/* Not selected Ids */}
     <BodyContainer>
       {
         ids
-          .filter((_id) => !filteredIds.includes(_id))
+          // .filter((_id) => !filteredIds.includes(_id))
           .map((_id, index) => <BodyRow key={index}>
             <Cell width={.75}>
               <Checkbox
-                checked={false}
-                onChange={() => setFilteredIds((_ids) => _ids.concat(_id))}
+                checked={filteredIds.includes(_id)}
+                onChange={(e, checked) => setFilteredIds((_ids) => checked ? _ids.concat(_id) : _ids.filter((_) => _ !== _id))}
               />
             </Cell>
             <Cell flexGrow={1}>

@@ -1,11 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { BodyContainer, BodyRow, Cell, HeaderRow, Table } from "./DataTable"
-import { Button, Checkbox, Grid, Paper, TextField, Typography } from "@mui/material"
+import { Button, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material"
 import Filter from "./Filter"
 
 type DataFrame = {
   id: string
-  data: string[]
+  timeStamp: number
+  data: {
+    value: string
+    timeStamp: number
+    timeSinceChanged: number
+    highlight: boolean
+  }[]
 }
 
 type Byte = {
@@ -19,6 +25,9 @@ type Message = {
 }
 
 export default function Stream() {
+  // General
+  const [idFilter, setIdFilter] = useState<'all' | 'not-extended' | 'extended'>('all')
+  // Data
   const [data, setData] = useState<DataFrame[]>([])
   const [message, setMessage] = useState<Message>({
     id: '7DF',
@@ -55,12 +64,30 @@ export default function Stream() {
         const index = _.findIndex((_) => _.id === newValue[1])
 
         if (index !== -1) {
-          _[index].data = newValue.slice(2, newValue.length)
+          _[index].timeStamp = Number(newValue[0])
+          _[index].data = newValue.map((_value, _index) => {
+            if ([0, 1].includes(_index)) return null
+
+            if (_value === _[index].data[_index - 2]?.value) {
+              return {
+                ..._[index].data[_index - 2],
+                timeSinceChanged: Number(newValue[0] + '0') - (_[index].data[_index - 2]?.timeStamp || 0),
+                highlight: Number(newValue[0] + '0') - (_[index].data[_index - 2]?.timeStamp || 0) > 750 ? false : true
+              }
+            }
+
+            return {
+              value: _value,
+              timeStamp: Number(newValue[0] + '0'),
+              timeSinceChanged: 0,
+              highlight: _[index].data[_index - 2]?.timeSinceChanged > 750
+            }
+          }).slice(2, newValue.length)
         }
         else {
-          _.push({ id: newValue[1], data: newValue.slice(2, newValue.length) })
+          _.push({ id: newValue[1], timeStamp: Number(newValue[0]), data: newValue.map((_value) => ({ value: _value, timeStamp: Number(newValue[0]), timeSinceChanged: 0, highlight: false })).slice(2, newValue.length) })
 
-          _.sort()
+          // _.sort()
         }
 
         return _
@@ -94,8 +121,20 @@ export default function Stream() {
     })
   }, [])
 
+  // Filters
+  const filterById = useCallback((_dataFrame: DataFrame) => {
+    switch (idFilter) {
+      case 'extended':
+        return Number(_dataFrame.id) >= 0x800
+      case 'not-extended':
+        return Number(_dataFrame.id) < 0x800
+      default:
+        return true
+    }
+  }, [idFilter])
+
   return <Grid container spacing={1}>
-    <Grid item xs={9} maxHeight={'50vh'}>
+    <Grid item xs={9} maxHeight={'90vh'}>
       <Table>
         <HeaderRow>
           <Cell>
@@ -131,15 +170,18 @@ export default function Stream() {
             data.length ?
               data
                 .filter((_dataFrame) => !filteredIds.includes(_dataFrame.id))
+                .filter(filterById)
                 .map((_dataFrame, index) =>
                   <BodyRow key={index}>
                     <Cell>
                       <p>{_dataFrame.id}</p>
+                      <p>{_dataFrame.timeStamp}</p>
                     </Cell>
                     {
                       _dataFrame.data.map((_, _index) => <Cell key={_index}>
-                        <p>{_}</p>
-                        <p>{parseInt(_, 16).toString(2).padStart(8, '0')}</p>
+                        <p style={{ backgroundColor: _.highlight ? 'limegreen' : 'transparent' }}>{_.value}</p>
+                        <p>{parseInt(_.value, 16).toString(2).padStart(8, '0')}</p>
+                        {/* <p>{_.timeSinceChanged}ms</p> */}
                       </Cell>
                       )
                     }
@@ -259,6 +301,18 @@ export default function Stream() {
             >
               Send
             </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label='ID Filter'
+              value={idFilter}
+              onChange={(e) => setIdFilter(e.target.value as 'all' | 'not-extended' | 'extended')}
+              select
+            >
+              <MenuItem value='all'>All</MenuItem>
+              <MenuItem value='not-extended'>Not extended</MenuItem>
+              <MenuItem value='extended'>Extended</MenuItem>
+            </TextField>
           </Grid>
           <Grid item xs={12} maxHeight={'50vh'}>
             <Filter
